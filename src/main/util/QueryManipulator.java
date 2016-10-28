@@ -9,7 +9,9 @@ import static main.util.Collection.extractRegexMatchesAsList;
 
 
 public class QueryManipulator {
-    public static String getNameFromQuery(HttpServletRequest request) {
+//    public static String ass
+
+    public static String getNameFromRequest(HttpServletRequest request) {
         return request.getParameter("queryName");
     }
 

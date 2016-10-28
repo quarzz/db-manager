@@ -15,16 +15,18 @@ public class QueryController extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
 
-        String queryName = getNameFromQuery(req);
-
-
+        String queryName = getNameFromRequest(req);
         Set<String> queryParameterNames = getQueryParameterNames(queryName);
 
-        System.out.println("QUERY NAME: " + queryName);
-        System.out.println("Parameters: ");
-        queryParameterNames.forEach(System.out::println);
-
+        req.setAttribute("queryName", queryName);
         req.setAttribute("queryParameterNames", queryParameterNames);
         req.getRequestDispatcher("query.jsp").forward(req, resp);
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp)
+            throws ServletException, IOException {
+
+//        String sqlQueryString =
     }
 }
