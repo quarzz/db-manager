@@ -17,6 +17,10 @@
     <servlet-name>QueryController</servlet-name>
     <servlet-class>main.controller.QueryController</servlet-class>
   </servlet>
+  <servlet>
+    <servlet-name>TriggerController</servlet-name>
+    <servlet-class>main.controller.TriggerController</servlet-class>
+  </servlet>
 
   <servlet-mapping>
     <servlet-name>TableController</servlet-name>
@@ -29,5 +33,9 @@
   <servlet-mapping>
     <servlet-name>QueryController</servlet-name>
     <url-pattern>/query</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>TriggerController</servlet-name>
+    <url-pattern>/trigger</url-pattern>
   </servlet-mapping>
 </web-app>

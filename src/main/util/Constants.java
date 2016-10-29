@@ -18,21 +18,23 @@ public class Constants {
         "CHECK_SURPLUS"
     };
 
+
+    //trigger data (can be done from sql
     //query data
     public static final Map<String, String> QUERIES;
     static {
         QUERIES = new HashMap<>();
         QUERIES.put(
                 "These year operations by category",
-                "SELECT * FROM operation, cost, cost_category\n" +
+                "SELECT operation.* FROM operation, cost, cost_category\n" +
                 "   WHERE cost_category.name = '&category' AND\n" +
                 "   cost.category_id = cost_category.id AND\n" +
                 "   operation.id = cost.operation_id AND\n" +
-                "   EXTRACT(YEAR FROM (SYSDATE)) = EXTRACT(YEAR FROM (operation.time));"
+                "   EXTRACT(YEAR FROM (SYSDATE)) = EXTRACT(YEAR FROM (operation.time))"
         );
         QUERIES.put(
                 "All debit operations",
-                "SELECT * FROM operation WHERE total < 0;"
+                "SELECT * FROM operation WHERE total < 0"
         );
         QUERIES.put(
                 "This year top 5 expensive operations",
@@ -44,7 +46,7 @@ public class Constants {
                 "    WHERE cost.operation_id = tmp1.id AND\n" +
                 "    EXTRACT(YEAR FROM (SYSDATE)) = EXTRACT(YEAR FROM(tmp1.time))\n" +
                 "    ORDER BY tmp1.normolized_total)\n" +
-                "  WHERE ROWNUM <= 5; "
+                "  WHERE ROWNUM <= 5"
         );
     }
 

@@ -1,12 +1,15 @@
 package main.dao;
 
 
+import main.entity.Trigger;
 import main.util.*;
 import main.util.Collection;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 // Should i handle exceptions here on throw them to the caller???
@@ -38,6 +41,48 @@ public class TableDaoImpl implements TableDAO {
         } else {
             return connection = DriverManager.getConnection(databaseURL, username, password);
         }
+    }
+
+    @Override
+    public void changeTriggerState(String triggerName, boolean enable) {
+
+        try {
+            connection = getConnection();
+
+            Statement statement = connection.createStatement();
+
+            String action = enable ? "ENABLE" : "DISABLE";
+
+            String query = String.format("ALTER TRIGGER %s %s", triggerName, action);
+
+            System.out.println(query);
+
+            statement.executeQuery(query);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public List<Trigger> getTriggers() throws SQLException {
+        List<Trigger> result = new ArrayList<>();
+        connection = getConnection();
+
+        Statement statement = connection.createStatement();
+
+        ResultSet resultSet = statement.executeQuery("select distinct trigger_name, status from user_triggers");
+
+        while (resultSet.next()) {
+            String name = resultSet.getString(1);
+            boolean active = resultSet.getString(2).equalsIgnoreCase("enabled");
+            Trigger trigger = new Trigger();
+            trigger.setName(name);
+            trigger.setActive(active);
+            result.add(trigger);
+            System.out.println(name);
+        }
+
+        return result;
     }
 
     @Override
@@ -75,23 +120,54 @@ public class TableDaoImpl implements TableDAO {
 
     @Override
     public ArrayList<ArrayList<String>> getTableData(String tableName) throws SQLException {
-        ArrayList<ArrayList<String>> tableData = new ArrayList<>();
+//        ArrayList<ArrayList<String>> tableData = new ArrayList<>();
+//
+//        connection = getConnection();
+//        Statement statement = connection.createStatement();
+//        ResultSet tableDataSet =
+//                statement.executeQuery(String.format(Constants.Queries.TABLE_DATA, tableName));
+
+        return getQueryData(String.format(Constants.Queries.TABLE_DATA, tableName));
+
+//        int columnCount = tableDataSet.getMetaData().getColumnCount();
+//
+//        while (tableDataSet.next()) {
+//            ArrayList<String> tableRow = new ArrayList<>();
+//            for (int i = 1; i <= columnCount; ++i)
+//                tableRow.add(tableDataSet.getString(i));
+//            tableData.add(tableRow);
+//        }
+//
+//        return tableData;
+    }
+
+    @Override
+    public ArrayList<ArrayList<String>> getQueryData(String sqlQueryString) throws SQLException {
+        ArrayList<ArrayList<String>> data = new ArrayList<>();
 
         connection = getConnection();
         Statement statement = connection.createStatement();
-        ResultSet tableDataSet =
-                statement.executeQuery(String.format(Constants.Queries.TABLE_DATA, tableName));
+        System.out.println(sqlQueryString);
+        ResultSet dataSet =
+                statement.executeQuery(sqlQueryString);
 
-        int columnCount = tableDataSet.getMetaData().getColumnCount();
+        int columnCount = dataSet.getMetaData().getColumnCount();
 
-        while (tableDataSet.next()) {
-            ArrayList<String> tableRow = new ArrayList<>();
+        ArrayList<String> columnNames = new ArrayList<>();
+
+        for (int i = 1; i <= columnCount; ++i)
+            columnNames.add(dataSet.getMetaData().getColumnLabel(i));
+
+        data.add(columnNames);
+
+        while (dataSet.next()) {
+            ArrayList<String> row = new ArrayList<>();
             for (int i = 1; i <= columnCount; ++i)
-                tableRow.add(tableDataSet.getString(i));
-            tableData.add(tableRow);
+                row.add(dataSet.getString(i));
+            data.add(row);
         }
 
-        return tableData;
+        return data;
     }
 
     @Override
@@ -115,7 +191,7 @@ public class TableDaoImpl implements TableDAO {
 
     @Override
     public boolean update(String tableName, List<String> row) {
-        boolean result = false;
+        boolean result;
 
         try {
             connection = getConnection();
@@ -142,7 +218,7 @@ public class TableDaoImpl implements TableDAO {
 
             int updated = statement.executeUpdate();
 
-            result = true;
+            result = updated > 0;
         } catch (SQLException e) {
             System.err.println("EXCEPTION IN UPDATE");
             e.printStackTrace();

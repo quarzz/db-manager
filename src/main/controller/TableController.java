@@ -33,6 +33,12 @@ public class TableController extends HttpServlet {
             String tableName = req.getParameter("tableName");
             String tableAction = req.getParameter("action");
 
+            String url = req.getRequestURI();
+            if (req.getQueryString() != null && req.getQueryString().length() >0)
+                url += '?' + req.getQueryString();
+            req.getSession().setAttribute("prevUrl", url);
+
+
             if (tableName == null) {
                 index(req, resp);
             } else {
@@ -60,6 +66,12 @@ public class TableController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         req.setCharacterEncoding("UTF-8");
+
+        String url = req.getRequestURI();
+        if (req.getQueryString() != null && req.getQueryString().length() >0)
+            url += '?' + req.getQueryString();
+        req.getSession().setAttribute("prevUrl", url);
+
 
         String action = req.getParameter("action");
 
@@ -117,6 +129,7 @@ public class TableController extends HttpServlet {
 
         ArrayList<ArrayList<String>> tableData = tableDAO.getTableData(tableName);
 
+        req.setAttribute("action", "table");
         req.setAttribute("tableName", tableName);
         req.setAttribute("columnNames", columnNames);
         req.setAttribute("tableData", tableData);

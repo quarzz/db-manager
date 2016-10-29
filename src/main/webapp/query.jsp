@@ -9,6 +9,7 @@
                 <input type="text" id="${parameterName}" name="${parameterName}"/>
             </p>
         </c:forEach>
+        <input type="hidden" name="queryName" value="${requestScope.queryName}"/>
         <input type="submit" name="execute" value="execute">
     </fieldset>
 </form>
