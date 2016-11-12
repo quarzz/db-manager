@@ -8,16 +8,8 @@ public class Constants {
 
     //database connection data
     public static final String DATABASE_URL = "jdbc:oracle:thin:@localhost:1521:XE";
-    public static final String USERNAME = "oli";
-    public static final String PASSWORD = "imivrsagzp";
-
-    //trigger data
-    public static final String[] TRIGGERS = {
-        "BIRTH_CONTROL",
-        "CHECK_OPERATION_AGE",
-        "CHECK_SURPLUS"
-    };
-
+    public static final String USERNAME = "your oracle username";
+    public static final String PASSWORD = "password of username above";
 
     //trigger data (can be done from sql
     //query data

@@ -150,7 +150,7 @@ public class TableController extends HttpServlet {
             resp.sendRedirect("/table?tableName=" + tableName);
         else
             //resp.sendRedirect("/table?tableName=" + tableName);
-            resp.getWriter().println("SHIT");
+            resp.sendRedirect("/table?tableName=" + tableName);
     }
 
     private void showRow(HttpServletRequest req, HttpServletResponse resp)
@@ -192,6 +192,6 @@ public class TableController extends HttpServlet {
         if (tableDAO.delete(tableName, id))
             resp.sendRedirect("/table?tableName=" + tableName);
         else
-            resp.getOutputStream().println("shit");
+            resp.sendRedirect("/table?tableName=" + tableName);
     }
 }
